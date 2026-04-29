@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>API 랩 연동 가이드북</title>
+  <style>
+    :root{
+      --bg:#fff6ef;
+      --pink:#f6a7b7;
+      --pink2:#ffe1e8;
+      --mint:#57c7a5;
+      --ink:#4b3b38;
+      --dark:#201b1f;
+      --shadow:0 20px 70px rgba(117,74,82,.14);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      height:100%;
+      overflow:hidden;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+      background:radial-gradient(circle at top,#fffaf4,#ffeef2 58%,#ffd6df);
+      color:var(--ink);
+      cursor:url('assets/cursor/paw-cursor.png') 4 4, auto;
+    }
+    *{
+      cursor:url('assets/cursor/paw-cursor.png') 4 4, auto;
+    }
+    button,.thumb,.page-stage,.zoom-btn,.close-btn,.page-img,.zoom-img,
+    button:hover,.thumb:hover,.page-stage:hover,.zoom-btn:hover,.close-btn:hover,.page-img:hover,.zoom-img:hover,
+    a,a:hover,[role="button"],[role="button"]:hover{
+      cursor:url('assets/cursor/paw-cursor.png') 4 4, pointer !important;
+    }
+
+    .app{
+      height:100%;
+      display:grid;
+      grid-template-columns:270px minmax(0,1fr);
+      gap:0;
+      min-height:0;
+    }
+
+    aside{
+      height:100%;
+      min-height:0;
+      background:rgba(255,255,255,.72);
+      border-right:1px solid rgba(246,167,183,.6);
+      padding:18px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      backdrop-filter:blur(10px);
+      overflow:hidden;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      font-size:18px;
+      color:#3f3433;
+      flex:0 0 auto;
+    }
+
+    .badge{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:linear-gradient(135deg,#fff,#ffe1e8);
+      display:grid;
+      place-items:center;
+      box-shadow:0 8px 22px rgba(246,167,183,.25);
+      font-size:22px;
+    }
+
+    .hint{
+      font-size:12px;
+      line-height:1.55;
+      color:#796966;
+      background:#fff;
+      border:1px dashed #f0a8b7;
+      border-radius:16px;
+      padding:12px;
+      flex:0 0 auto;
+    }
+
+    .thumbs{
+      flex:1 1 auto;
+      min-height:0;
+      overflow:auto;
+      padding-right:4px;
+      display:grid;
+      gap:10px;
+      align-content:start;
+      scrollbar-gutter:stable;
+    }
+
+    .thumbs::-webkit-scrollbar,
+    .page-stage::-webkit-scrollbar,
+    .zoom-viewport::-webkit-scrollbar{width:12px;height:12px}
+    .thumbs::-webkit-scrollbar-thumb,
+    .page-stage::-webkit-scrollbar-thumb,
+    .zoom-viewport::-webkit-scrollbar-thumb{background:#f2b8c4;border-radius:999px;border:3px solid transparent;background-clip:padding-box}
+    .thumbs::-webkit-scrollbar-track,
+    .page-stage::-webkit-scrollbar-track,
+    .zoom-viewport::-webkit-scrollbar-track{background:transparent}
+
+    .thumb{
+      border:2px solid transparent;
+      border-radius:16px;
+      background:#fff;
+      padding:8px;
+      display:grid;
+      grid-template-columns:54px 1fr;
+      gap:10px;
+      align-items:center;
+      text-align:left;
+      box-shadow:0 8px 18px rgba(117,74,82,.08);
+    }
+    .thumb.active{border-color:var(--mint);background:#ecfff8}
+    .thumb img{
+      width:54px;
+      height:76px;
+      object-fit:cover;
+      border-radius:10px;
+      border:1px solid #ffd2dc;
+    }
+    .thumb strong{font-size:13px;line-height:1.25}
+    .thumb span{font-size:11px;color:#8b7773}
+
+    main{
+      height:100%;
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      padding:16px 22px 18px;
+      gap:12px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .title{font-weight:900;font-size:20px}
+    .meta{font-size:13px;color:#7c6b68}
+    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+    button{
+      border:0;
+      border-radius:999px;
+      padding:10px 14px;
+      background:#fff;
+      color:#4b3b38;
+      font-weight:800;
+      box-shadow:0 8px 18px rgba(117,74,82,.10);
+      border:1px solid rgba(246,167,183,.55);
+    }
+    button.primary{background:linear-gradient(135deg,#62e1bd,#46bd9d);color:white;border-color:#3cb493}
+    button:disabled{opacity:.4}
+
+    .page-stage{
+      position:relative;
+      min-height:0;
+      border-radius:28px;
+      border:1px solid rgba(246,167,183,.65);
+      background:rgba(255,255,255,.72);
+      box-shadow:var(--shadow);
+      overflow:auto;
+      padding:56px 26px 18px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      scrollbar-gutter:stable;
+    }
+
+    .page-stage::before{
+      content:"이미지를 클릭하면 그 부분을 확대해서 볼 수 있다냥";
+      position:absolute;
+      top:10px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:2;
+      background:rgba(255,255,255,.84);
+      border:1px dashed #f6a7b7;
+      color:#7a5d5d;
+      border-radius:999px;
+      padding:8px 14px;
+      font-size:12px;
+      font-weight:800;
+      pointer-events:none;
+      width:max-content;
+      max-width:calc(100% - 24px);
+      text-align:center;
+    }
+
+    .page-img{
+      display:block;
+      width:auto;
+      height:auto;
+      max-width:min(calc(100% - 4px), 980px);
+      max-height:calc(100vh - 230px);
+      object-fit:contain;
+      border-radius:18px;
+      box-shadow:0 12px 40px rgba(80,45,52,.15);
+      user-select:none;
+      flex:0 0 auto;
+      margin:0 auto;
+    }
+
+    .bottom{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+    .progress{
+      min-width:140px;
+      text-align:center;
+      font-weight:900;
+      background:rgba(255,255,255,.75);
+      border:1px dashed #f6a7b7;
+      border-radius:999px;
+      padding:9px 16px;
+    }
+
+    .zoom-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(33,23,28,.82);
+      z-index:20;
+      display:none;
+      grid-template-rows:auto minmax(0,1fr);
+      backdrop-filter:blur(8px);
+    }
+    .zoom-modal.open{display:grid}
+    .zoom-header{
+      height:60px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 18px;
+      color:white;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .zoom-header b{font-size:16px}
+    .zoom-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .zoom-btn,.close-btn{
+      background:rgba(255,255,255,.14);
+      color:white;
+      border:1px solid rgba(255,255,255,.25);
+      box-shadow:none;
+    }
+    .zoom-viewport{
+      overflow:auto;
+      position:relative;
+      height:100%;
+      padding:30px;
+      display:block;
+      scrollbar-gutter:stable both-edges;
+    }
+    .zoom-img{
+      display:block;
+      max-width:none;
+      max-height:none;
+      border-radius:18px;
+      box-shadow:0 30px 120px rgba(0,0,0,.45);
+      user-select:none;
+    }
+    .zoom-guide{
+      position:fixed;
+      left:50%;
+      bottom:20px;
+      transform:translateX(-50%);
+      color:white;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:999px;
+      padding:10px 16px;
+      font-size:13px;
+      z-index:21;
+      text-align:center;
+    }
+    .dragging{cursor:grabbing!important}
+
+    .cursor-glow{
+      position:fixed;
+      left:0;
+      top:0;
+      border-radius:50%;
+      pointer-events:none;
+      z-index:9999;
+      opacity:.8;
+      will-change:transform;
+      mix-blend-mode:screen;
+    }
+    .cursor-glow.glow-1{
+      width:42px;
+      height:42px;
+      background:radial-gradient(circle, rgba(255,186,92,.45) 0%, rgba(255,153,51,.22) 40%, rgba(255,153,51,0) 72%);
+      filter:blur(4px);
+    }
+    .cursor-glow.glow-2{
+      width:26px;
+      height:26px;
+      background:radial-gradient(circle, rgba(255,203,120,.42) 0%, rgba(255,153,51,.14) 55%, rgba(255,153,51,0) 80%);
+      filter:blur(5px);
+      opacity:.6;
+    }
+    .cursor-glow.glow-3{
+      width:12px;
+      height:12px;
+      background:radial-gradient(circle, rgba(255,234,180,.9) 0%, rgba(255,176,73,.65) 38%, rgba(255,153,51,0) 85%);
+      filter:blur(1px);
+      opacity:.8;
+    }
+
+    @media (max-width: 1100px){
+      .page-img{max-width:min(100%, 860px)}
+    }
+    @media (max-width: 850px){
+      .app{grid-template-columns:1fr}
+      aside{display:none}
+      main{padding:10px}
+      .topbar{align-items:flex-start}
+      .title{font-size:17px}
+      .page-stage::before{display:none}
+      .page-img{max-height:calc(100vh - 200px)}
+      .zoom-guide{width:calc(100% - 24px)}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><div class="badge">🐾</div><div>API 랩<br/>연동 가이드북</div></div>
+      <div class="hint">좌우 버튼 또는 키보드 ← → 로 넘겨라냥.<br/>이미지를 클릭하면 클릭한 위치를 중심으로 확대된다냥.</div>
+      <div class="thumbs" id="thumbs"></div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <div class="title" id="pageTitle">API 랩 연동 가이드북</div>
+          <div class="meta">클릭 확대 · 드래그 이동 · 휠 확대/축소 지원</div>
+        </div>
+        <div class="controls">
+          <button id="prevBtn">← 이전</button>
+          <button id="nextBtn" class="primary">다음 →</button>
+        </div>
+      </div>
+
+      <div class="page-stage" id="stage">
+        <img id="pageImg" class="page-img" alt="guide page" draggable="false">
+      </div>
+
+      <div class="bottom">
+        <button id="firstBtn">처음</button>
+        <div class="progress" id="progress">1 / 12</div>
+        <button id="lastBtn">마지막</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="zoom-modal" id="zoomModal" aria-hidden="true">
+    <div class="zoom-header">
+      <b id="zoomTitle">확대 보기</b>
+      <div class="zoom-actions">
+        <button class="zoom-btn" id="zoomOut">－</button>
+        <button class="zoom-btn" id="zoomReset">100%</button>
+        <button class="zoom-btn" id="zoomIn">＋</button>
+        <button class="close-btn" id="zoomClose">닫기 ✕</button>
+      </div>
+    </div>
+    <div class="zoom-viewport" id="zoomViewport">
+      <img id="zoomImg" class="zoom-img" draggable="false" alt="zoomed page">
+    </div>
+    <div class="zoom-guide">마우스 드래그로 이동 · 휠로 확대/축소 · ESC로 닫기</div>
+  </div>
+
+  <div class="cursor-glow glow-1" aria-hidden="true"></div>
+  <div class="cursor-glow glow-2" aria-hidden="true"></div>
+  <div class="cursor-glow glow-3" aria-hidden="true"></div>
+
+<script>
+const pages = [
+  {src:'assets/pages/page_00.png', title:'표지'},
+  {src:'assets/pages/page_01.png', title:'01. 치지직 Developers 들어가기'},
+  {src:'assets/pages/page_02.png', title:'02. 애플리케이션 등록하기'},
+  {src:'assets/pages/page_03.png', title:'03. API Scope 선택하기'},
+  {src:'assets/pages/page_04.png', title:'04. 발급 정보 확인하기'},
+  {src:'assets/pages/page_05.png', title:'05. API 랩에 입력하고 로그인하기'},
+  {src:'assets/pages/page_06.png', title:'06. VTube Studio 연동하기'},
+  {src:'assets/pages/page_07.png', title:'07. OBS에 오버레이 연결하기'},
+  {src:'assets/pages/page_08.png', title:'08. 연동 후 기능 확인하기'},
+  {src:'assets/pages/page_09.png', title:'09. 자주 생기는 오류 해결하기'},
+  {src:'assets/pages/page_10.png', title:'10. RUN 창은 닫지 말기'},
+  {src:'assets/pages/page_11.png', title:'11. 해킹 걱정하지 말기'}
+];
+
+let idx = 0;
+const img = document.getElementById('pageImg');
+const thumbs = document.getElementById('thumbs');
+const stage = document.getElementById('stage');
+const zoomModal = document.getElementById('zoomModal');
+const zoomImg = document.getElementById('zoomImg');
+const viewport = document.getElementById('zoomViewport');
+
+function renderThumbs(){
+  thumbs.innerHTML = '';
+  pages.forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'thumb' + (i === idx ? ' active' : '');
+    b.innerHTML = `<img src="${p.src}" alt=""><div><strong>${p.title}</strong><br><span>${i+1} / ${pages.length}</span></div>`;
+    b.onclick = () => go(i);
+    thumbs.appendChild(b);
+  });
+}
+
+function go(n){
+  idx = Math.max(0, Math.min(pages.length - 1, n));
+  img.src = pages[idx].src;
+  img.alt = pages[idx].title;
+  document.getElementById('pageTitle').textContent = pages[idx].title;
+  document.getElementById('progress').textContent = `${idx + 1} / ${pages.length}`;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === pages.length - 1;
+  renderThumbs();
+  stage.scrollTo({top: 0, left: 0, behavior: 'instant'});
+}
+
+document.getElementById('prevBtn').onclick = () => go(idx - 1);
+document.getElementById('nextBtn').onclick = () => go(idx + 1);
+document.getElementById('firstBtn').onclick = () => go(0);
+document.getElementById('lastBtn').onclick = () => go(pages.length - 1);
+
+document.addEventListener('keydown', e => {
+  if (zoomModal.classList.contains('open')) {
+    if (e.key === 'Escape') closeZoom();
+    return;
+  }
+  if (e.key === 'ArrowLeft') go(idx - 1);
+  if (e.key === 'ArrowRight') go(idx + 1);
+});
+
+let scale = 2.2;
+let baseW = 0;
+let baseH = 0;
+let clickRatio = {x: .5, y: .5};
+
+function fitBase(){
+  const vw = viewport.clientWidth - 60;
+  const vh = viewport.clientHeight - 60;
+  const naturalW = zoomImg.naturalWidth || img.naturalWidth;
+  const naturalH = zoomImg.naturalHeight || img.naturalHeight;
+  const naturalRatio = naturalW / naturalH;
+  const frameRatio = vw / vh;
+  if (naturalRatio > frameRatio) {
+    baseW = vw;
+    baseH = vw / naturalRatio;
+  } else {
+    baseH = vh;
+    baseW = vh * naturalRatio;
+  }
+}
+
+function applyZoom(center = true){
+  fitBase();
+  zoomImg.style.width = (baseW * scale) + 'px';
+  zoomImg.style.height = (baseH * scale) + 'px';
+  requestAnimationFrame(() => {
+    if (center) {
+      viewport.scrollLeft = clickRatio.x * baseW * scale - viewport.clientWidth / 2;
+      viewport.scrollTop = clickRatio.y * baseH * scale - viewport.clientHeight / 2;
+    }
+  });
+  document.getElementById('zoomReset').textContent = Math.round(scale * 100) + '%';
+}
+
+function openZoomFromEvent(e){
+  const r = img.getBoundingClientRect();
+  clickRatio = {
+    x: Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)),
+    y: Math.max(0, Math.min(1, (e.clientY - r.top) / r.height))
+  };
+  zoomImg.src = pages[idx].src;
+  document.getElementById('zoomTitle').textContent = pages[idx].title;
+  zoomModal.classList.add('open');
+  zoomModal.setAttribute('aria-hidden', 'false');
+  scale = 2.2;
+  setTimeout(() => applyZoom(true), 30);
+}
+
+function closeZoom(){
+  zoomModal.classList.remove('open');
+  zoomModal.setAttribute('aria-hidden', 'true');
+}
+
+img.addEventListener('click', openZoomFromEvent);
+document.getElementById('zoomClose').onclick = closeZoom;
+document.getElementById('zoomIn').onclick = () => { scale = Math.min(5, scale + .3); applyZoom(false); };
+document.getElementById('zoomOut').onclick = () => { scale = Math.max(.8, scale - .3); applyZoom(false); };
+document.getElementById('zoomReset').onclick = () => { scale = 1.5; applyZoom(true); };
+
+viewport.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = viewport.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const old = scale;
+  scale = Math.max(.8, Math.min(5, scale + (e.deltaY < 0 ? .18 : -.18)));
+  const mx = x + viewport.scrollLeft;
+  const my = y + viewport.scrollTop;
+  applyZoom(false);
+  requestAnimationFrame(() => {
+    viewport.scrollLeft = (mx / old) * scale - x;
+    viewport.scrollTop = (my / old) * scale - y;
+  });
+}, {passive:false});
+
+let dragging = false;
+let last = {x:0, y:0};
+viewport.addEventListener('mousedown', e => {
+  dragging = true;
+  last = {x:e.clientX, y:e.clientY};
+  viewport.classList.add('dragging');
+});
+window.addEventListener('mouseup', () => {
+  dragging = false;
+  viewport.classList.remove('dragging');
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  viewport.scrollLeft -= e.clientX - last.x;
+  viewport.scrollTop -= e.clientY - last.y;
+  last = {x:e.clientX, y:e.clientY};
+});
+
+window.addEventListener('resize', () => {
+  if (zoomModal.classList.contains('open')) applyZoom(false);
+});
+
+const glowEls = Array.from(document.querySelectorAll('.cursor-glow'));
+const glowState = [
+  {x: window.innerWidth/2, y: window.innerHeight/2, ease: 0.22, offset: 21},
+  {x: window.innerWidth/2, y: window.innerHeight/2, ease: 0.14, offset: 13},
+  {x: window.innerWidth/2, y: window.innerHeight/2, ease: 0.32, offset: 6}
+];
+const pointer = {x: window.innerWidth/2, y: window.innerHeight/2, active: false};
+
+function animateGlow(){
+  glowState.forEach((g, i) => {
+    g.x += (pointer.x - g.x) * g.ease;
+    g.y += (pointer.y - g.y) * g.ease;
+    glowEls[i].style.transform = `translate(${g.x - g.offset}px, ${g.y - g.offset}px)`;
+    glowEls[i].style.opacity = pointer.active ? '' : '0';
+  });
+  requestAnimationFrame(animateGlow);
+}
+
+window.addEventListener('mousemove', e => {
+  pointer.x = e.clientX;
+  pointer.y = e.clientY;
+  pointer.active = true;
+});
+window.addEventListener('mouseenter', () => pointer.active = true);
+window.addEventListener('mouseleave', () => pointer.active = false);
+
+animateGlow();
+go(0);
+</script>
+</body>
+</html>
