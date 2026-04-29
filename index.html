@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>크리에이터 API 랩</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="크리에이터 API 랩 홈">
+        <span class="brand-mark">🐾</span>
+        <span><strong>크리에이터 API 랩</strong><small>OBS 리액션 대시보드</small></span>
+      </a>
+      <nav class="nav">
+        <a href="#features">기능</a>
+        <a href="#dashboard">대시보드</a>
+        <a href="#guidebook">가이드북</a>
+        <a href="#notice">필독</a>
+        <a class="nav-cta" href="#download">다운로드</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">치지직 채팅/후원 × OBS × VTube Studio</p>
+          <h1>방송 리액션을<br><span>API로 쉽게 연결하는</span><br>크리에이터 도구</h1>
+          <p class="lead">치지직 채팅과 후원을 방송용 리액션, 룰렛, 슬롯머신, 참여 기능으로 연결하는 로컬 실행형 대시보드입니다.</p>
+          <div class="hero-actions">
+            <a class="btn primary" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1YPQNKpzsllCg53FaHufg_-jvfqCIBch5?usp=sharing">다운로드 폴더 열기</a>
+            <button class="btn ghost copy-discord" type="button">디스코드 catmozzi_ 복사</button>
+          </div>
+          <div class="notice-mini"><strong>사용 문의</strong><span>프로그램을 사용하고 싶으시면 디스코드 <b>catmozzi_</b> 로 연락해주세요.</span></div>
+        </div>
+        <div class="hero-panel">
+          <div class="screen-card">
+            <img src="assets/images/dashboard_kill_roulette.png" alt="크리에이터 API 랩 대시보드 화면" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Core Features</p>
+          <h2>방송 중 바로 쓰는 인터랙션 기능</h2>
+          <p>채팅과 후원을 룰렛, 슬롯머신, 참여/추첨, 캐릭터 리액션으로 연결해 방송 화면을 더 생동감 있게 만들어보세요.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><span>⚡</span><h3>쉬운 API 적용</h3><p>치지직 Developers에서 발급받은 정보를 입력하고 저장하면 채팅/후원 연동 상태를 대시보드에서 확인할 수 있습니다.</p></article>
+          <article class="feature-card"><span>🎯</span><h3>킬 룰렛</h3><p>후원 시 룰렛 수를 누적하거나 차감해 잔여/누적 킬 수를 관리할 수 있습니다. 실제 후원 테스트와 수동 조작도 지원합니다.</p></article>
+          <article class="feature-card"><span>🎰</span><h3>슬롯머신</h3><p>채팅 또는 후원 트리거로 슬롯머신 연출을 실행하고, OBS 오버레이에 방송용 효과로 보여줄 수 있습니다.</p></article>
+          <article class="feature-card"><span>💬</span><h3>채팅 연동 기능</h3><p>명령어 기반 참여, 투표, 추첨, 리액션 실행 등 채팅을 방송 진행 도구로 확장합니다.</p></article>
+          <article class="feature-card"><span>🎁</span><h3>후원 연동 기능</h3><p>후원 금액 조건에 따라 룰렛, 이펙트, 던지기, 누적 카운터 같은 기능을 자동으로 실행할 수 있습니다.</p></article>
+          <article class="feature-card"><span>🧍</span><h3>시참 대기열</h3><p>시청자가 채팅 명령어로 참여 신청을 하면 대기열과 오버레이가 자동으로 갱신되도록 구성할 수 있습니다.</p></article>
+          <article class="feature-card"><span>🗳️</span><h3>투표 / 참여 추첨</h3><p>채팅 투표 결과를 퍼센트로 보여주거나, 참여 명령어 기반으로 랜덤 추첨을 진행할 수 있습니다.</p></article>
+          <article class="feature-card"><span>🐱</span><h3>VTube Studio 리액션</h3><p>VTube Studio API와 연결해 간식, 치즈, 하트, 선물 등 캐릭터 반응형 연출을 설정할 수 있습니다.</p></article>
+          <article class="feature-card"><span>🖥️</span><h3>OBS 오버레이</h3><p>브라우저 소스 URL을 OBS에 넣어 방송 화면 위에 리액션, 룰렛, 안내, 대기열 등을 표시합니다.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dashboard-section" id="dashboard">
+      <div class="container dashboard-grid">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h2>기능별로 깔끔하게 나뉜 대시보드</h2>
+          <p>좌측 메뉴에서 원하는 기능을 선택하고, ON/OFF와 테스트 버튼으로 방송 전에 동작 상태를 빠르게 확인할 수 있습니다.</p>
+          <ul class="check-list">
+            <li>서버/치지직/VTS 연결 상태 표시</li>
+            <li>기능별 ON/OFF 토글</li>
+            <li>실제 후원 테스트 및 수동 조작</li>
+            <li>OBS URL 기반 오버레이 연결</li>
+          </ul>
+        </div>
+        <div class="screen-card large"><img src="assets/images/dashboard_kill_roulette.png" alt="킬 룰렛 대시보드" /></div>
+      </div>
+    </section>
+
+    <section class="section guidebook-section" id="guidebook">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Built-in Guidebook</p>
+          <h2>처음 설정할 때 바로 펼쳐보는 내장 가이드북</h2>
+          <p>별도 파일을 찾을 필요 없이 사이트 안에서 가이드북을 바로 넘겨볼 수 있습니다. 페이지 목록을 누르거나 이전/다음 버튼으로 이동하세요.</p>
+        </div>
+        <div class="guide-viewer" id="guideViewer">
+          <aside class="guide-sidebar">
+            <div class="guide-title">API 랩 연동 가이드북</div>
+            <div class="guide-pages" id="guidePages"></div>
+          </aside>
+          <div class="guide-main">
+            <div class="guide-toolbar">
+              <div><strong id="guidePageTitle">표지</strong><small id="guidePageCount">1 / 12</small></div>
+              <div class="toolbar-actions"><button id="prevPage" type="button">← 이전</button><button id="nextPage" class="primary-small" type="button">다음 →</button></div>
+            </div>
+            <div class="guide-stage"><img id="guideImage" alt="가이드북 페이지" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section notice-section" id="notice">
+      <div class="container">
+        <div class="section-head"><p class="eyebrow">Must Read</p><h2>필독 안내</h2><p>프로그램 사용 전 아래 내용을 반드시 확인해주세요. 같은 내용은 <b>필독.txt</b> 파일로도 제공됩니다.</p></div>
+        <div class="notice-box">
+          <ol>
+            <li>프로그램의 무단 배포 및 파일의 임의 수정을 금합니다.</li>
+            <li>프로그램을 사용하시려면 디스코드 <b>catmozzi_</b> 로 아래 양식을 작성해 DM을 보내주세요.<br><pre>[사용 신청 양식]
+방송국 주소:
+주요 사용 목적:</pre><span>전달해주신 정보는 사용자 확인 및 사용 목적 리서치 용도로만 활용됩니다.</span></li>
+            <li>위 정보를 보내지 않은 크리에이터의 방송에서 프로그램 사용이 확인될 경우, 무단 배포 또는 무단 사용이 있었던 것으로 간주할 수 있습니다. 이 경우 프로그램 배포 또는 업데이트가 중단될 수 있습니다.</li>
+            <li>프로그램을 사용한 방송 영상 또는 클립은 홍보, 설명, 사용 예시 제작 등의 목적으로 편집되어 활용될 수 있습니다.</li>
+            <li>프로그램을 사용하는 경우, 위 항목에 모두 동의한 것으로 간주됩니다.</li>
+          </ol>
+          <a class="btn ghost" href="필독.txt" download>필독.txt 다운로드</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section download-section" id="download">
+      <div class="container cta-box">
+        <div><p class="eyebrow">Download</p><h2>다운로드 및 사용 문의</h2><p>프로그램 사용을 원하시면 디스코드 <b>catmozzi_</b> 로 방송국 주소와 주요 사용 목적을 보내주세요. 다운로드 파일은 아래 Google Drive 폴더에서 확인할 수 있습니다.</p></div>
+        <div class="cta-actions"><a class="btn primary" target="_blank" rel="noopener" href="https://drive.google.com/drive/folders/1YPQNKpzsllCg53FaHufg_-jvfqCIBch5?usp=sharing">Google Drive 열기</a><button class="btn ghost copy-discord" type="button">catmozzi_ 복사</button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="container footer-inner"><span>크리에이터 API 랩</span><span>문의: Discord catmozzi_</span></div></footer>
+  <div class="modal" id="imageModal" aria-hidden="true"><button class="modal-close" id="modalClose" type="button">×</button><img id="modalImage" alt="확대 이미지" /></div>
+  <div class="toast" id="toast">복사되었습니다.</div>
+  <script src="script.js"></script>
+</body>
+</html>
